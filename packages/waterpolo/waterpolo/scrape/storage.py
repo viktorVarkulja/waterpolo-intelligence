@@ -83,7 +83,8 @@ def upsert_match(session: Session, match: MatchModel) -> Match:
     match_id = match.match_id or _match_id_fallback(match)
     db_match = session.execute(select(Match).where(Match.match_key == match_id)).scalar_one_or_none()
     if db_match:
-        db_match.season = match.season
+        if match.season:
+            db_match.season = match.season
         db_match.stage = match.stage
         db_match.date = match.date
         db_match.home_score = match.home_score
@@ -252,6 +253,8 @@ def run_scrape_full(
         db_match = upsert_match(session, match)
         match_count += 1
         match_model, team_stats, players, player_stats = source.fetch_match(match.match_id)
+        if not match_model.season:
+            match_model.season = match.season or season
         db_match = upsert_match(session, match_model)
         stat_count += upsert_team_stats(session, db_match, team_stats)
         upsert_players(session, players, match_model.season)

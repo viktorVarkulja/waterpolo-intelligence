@@ -40,6 +40,16 @@ export type Trends = {
   points: TrendPoint[];
 };
 
+export type TeamMatch = {
+  match_id: number;
+  date?: string | null;
+  stage?: string | null;
+  opponent: string;
+  home: boolean;
+  team_score: number | null;
+  opponent_score: number | null;
+};
+
 export type Player = {
   id: number;
   team_id: number | null;
@@ -48,7 +58,18 @@ export type Player = {
   position: string | null;
   team_name?: string | null;
   age?: number | null;
-  stats?: Record<string, number | null> | null;
+  stats?: {
+    matches: number;
+    goals: number;
+    shots: number;
+    assists: number;
+    steals: number;
+    blocks: number;
+    exclusions: number;
+    turnovers: number;
+    goals_per_match: number;
+    shooting_pct: number;
+  } | null;
 };
 
 export type Match = {
@@ -61,6 +82,34 @@ export type Match = {
   home_score: number | null;
   away_score: number | null;
   venue?: string | null;
+};
+
+export type MatchTeamStats = {
+  team_id: number;
+  team_name: string;
+  is_home: boolean;
+  stats: Record<string, number>;
+};
+
+export type MatchPlayerLine = {
+  player_id: number;
+  player_name: string;
+  team_id: number | null;
+  team_name: string | null;
+  goals: number | null;
+  shots: number | null;
+  assists: number | null;
+  steals: number | null;
+  blocks: number | null;
+  exclusions: number | null;
+  turnovers: number | null;
+};
+
+export type MatchDetail = Match & {
+  home_team_id: number;
+  away_team_id: number;
+  team_stats: MatchTeamStats[];
+  player_stats: MatchPlayerLine[];
 };
 
 export type CompareResponse = {
@@ -107,7 +156,9 @@ export const api = {
   teamTrends: (id: number, filters: Record<string, string | number | null | undefined>) =>
     fetchJson<Trends>(`/teams/${id}/trends`, filters),
   teamMatches: (id: number, filters: Record<string, string | number | null | undefined>) =>
-    fetchJson<Match[]>(`/teams/${id}/matches`, filters),
+    fetchJson<TeamMatch[]>(`/teams/${id}/matches`, filters),
+  teamRoster: (id: number, filters: Record<string, string | number | null | undefined>) =>
+    fetchJson<Player[]>(`/teams/${id}/roster`, filters),
   compare: (filters: Record<string, string | number | null | undefined>) =>
     fetchJson<CompareResponse>("/compare", filters),
   players: (filters: Record<string, string | number | null | undefined>) =>
@@ -117,5 +168,5 @@ export const api = {
     fetchJson<{ points: TrendPoint[] }>(`/players/${id}/trends`, filters),
   matches: (filters: Record<string, string | number | null | undefined>) =>
     fetchJson<Match[]>("/matches", filters),
-  match: (id: string | number) => fetchJson<Match>(`/matches/${id}`)
+  match: (id: string | number) => fetchJson<MatchDetail>(`/matches/${id}`)
 };

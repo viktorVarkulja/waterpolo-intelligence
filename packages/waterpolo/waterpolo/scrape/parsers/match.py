@@ -12,7 +12,7 @@ from waterpolo.scrape.parsers.stats import map_player_stats, map_stats
 def _season_from_filename(filename: str | None) -> str | None:
     if not filename:
         return None
-    match = re.search(r"(CL\\d{2})", filename)
+    match = re.search(r"(CL\d{2})", filename)
     return match.group(1) if match else None
 
 
@@ -53,6 +53,7 @@ def _parse_microplus_stats(headers: List[str], values: List[str]) -> Dict[str, i
                 stats["PSOSh"] = att
             elif header.startswith("sp"):
                 stats["SpW"] = made
+                stats["Sp"] = att
         else:
             value_int = parse_int(value) or 0
             if header == "as":
@@ -63,6 +64,8 @@ def _parse_microplus_stats(headers: List[str], values: List[str]) -> Dict[str, i
                 stats["St"] = value_int
             elif header.startswith("bl"):
                 stats["Bl"] = value_int
+            elif header == "sp":
+                stats["Sp"] = value_int
             elif header.startswith("sp"):
                 stats["SpW"] = value_int
             elif header == "18c":

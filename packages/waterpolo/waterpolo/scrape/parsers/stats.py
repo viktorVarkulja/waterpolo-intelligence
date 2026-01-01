@@ -27,6 +27,8 @@ LABEL_MAP = {
     "blocks": "Bl",
     "sprintswon": "SpW",
     "sprints": "Sp",
+    "spw": "SpW",
+    "sp": "Sp",
     "exclusionsdrawn": "ExCe",
     "exclusionsfouls": "ExF",
     "doubleexclusions": "DoEx",

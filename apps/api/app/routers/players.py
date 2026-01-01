@@ -12,12 +12,14 @@ router = APIRouter(prefix="/players")
 @router.get("", response_model=list[PlayerOut])
 def list_players(
     season: str | None = Query(None),
+    stage: str | None = Query(None),
     team: int | None = Query(None),
     role: str | None = Query(None),
     q: str | None = Query(None),
     session: Session = Depends(get_session),
 ) -> list[PlayerOut]:
     players = crud.list_players_filtered(session, team_id=team, role=role, query=q)
+    stats_map = crud.player_aggregates(session, [player.id for player in players], season=season, stage=stage)
     return [
         PlayerOut(
             id=player.id,
@@ -25,6 +27,8 @@ def list_players(
             name=player.name,
             number=player.number,
             position=player.position,
+            team_name=player.team.name if player.team else None,
+            stats=stats_map.get(player.id),
         )
         for player in players
     ]
@@ -35,6 +39,7 @@ def get_player(player_id: int, session: Session = Depends(get_session)) -> Playe
     player = crud.get_player(session, player_id)
     if not player:
         raise HTTPException(status_code=404, detail="Player not found")
+    stats_map = crud.player_aggregates(session, [player.id])
     return PlayerDetail(
         id=player.id,
         team_id=player.team_id,
@@ -43,6 +48,8 @@ def get_player(player_id: int, session: Session = Depends(get_session)) -> Playe
         position=player.position,
         dob=player.dob,
         source_url=player.source_url,
+        team_name=player.team.name if player.team else None,
+        stats=stats_map.get(player.id),
     )
 
 

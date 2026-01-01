@@ -7,19 +7,26 @@ import { LineChart } from "../../../components/Charts";
 import EmptyStateCard from "../../../components/EmptyStateCard";
 import KpiCard from "../../../components/KpiCard";
 import { SkeletonChart } from "../../../components/Skeletons";
-import { usePlayer } from "../../../lib/hooks";
+import { useFilters } from "../../../components/FilterProvider";
+import { usePlayer, usePlayerTrends } from "../../../lib/hooks";
 
 export default function PlayerProfile() {
   const params = useParams<{ id: string }>();
   const playerId = Number(params?.id);
+  const { season, stage } = useFilters();
   const { data: player, isLoading } = usePlayer(playerId);
+  const { data: trends } = usePlayerTrends(playerId, { season, stage, window: 5 });
 
   if (isLoading) return <SkeletonChart />;
   if (!player) {
     return <EmptyStateCard title="Player not found" description="Check the roster ingestion or try again." />;
   }
 
-  const hasStats = Boolean(player.stats);
+  const hasStats = Boolean(player.stats?.matches);
+  const trendPoints = trends?.points ?? [];
+  const categories = trendPoints.map((point) => `M${point.match_index}`);
+  const goalsSeries = trendPoints.map((point) => point.goals ?? 0);
+  const shotsSeries = trendPoints.map((point) => point.shots ?? 0);
 
   return (
     <section className="space-y-6">
@@ -50,17 +57,21 @@ export default function PlayerProfile() {
       ) : (
         <>
           <div className="grid gap-4 md:grid-cols-3">
-            <KpiCard label="Goals/Match" value={player.stats?.goals ?? 0} delta={0.4} />
-            <KpiCard label="Shooting %" value={`${player.stats?.shooting_pct ?? 0}%`} delta={1.2} />
-            <KpiCard label="Assists" value={player.stats?.assists ?? 0} delta={-0.3} />
+            <KpiCard label="Goals/Match" value={player.stats?.goals_per_match ?? 0} delta={0} />
+            <KpiCard
+              label="Shooting %"
+              value={`${((player.stats?.shooting_pct ?? 0) * 100).toFixed(1)}%`}
+              delta={0}
+            />
+            <KpiCard label="Assists" value={player.stats?.assists ?? 0} delta={0} />
           </div>
           <LineChart
             title="Recent form"
             caption="Rolling goals and shots"
-            categories={["M1", "M2", "M3", "M4", "M5"]}
+            categories={categories.length ? categories : ["M1", "M2", "M3", "M4", "M5"]}
             series={[
-              { name: "Goals", data: [2, 1, 3, 1, 2], color: "#0ea5a3" },
-              { name: "Shots", data: [4, 3, 6, 4, 5], color: "#f97316" }
+              { name: "Goals", data: goalsSeries.length ? goalsSeries : [2, 1, 3, 1, 2], color: "#0ea5a3" },
+              { name: "Shots", data: shotsSeries.length ? shotsSeries : [4, 3, 6, 4, 5], color: "#f97316" }
             ]}
           />
         </>

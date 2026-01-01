@@ -78,11 +78,25 @@ class PlayerOut(BaseModel):
     name: str
     number: Optional[int]
     position: Optional[str]
+    team_name: Optional[str] = None
+    stats: Optional["PlayerStats"] = None
 
 
 class PlayerDetail(PlayerOut):
     dob: Optional[date]
     source_url: Optional[str]
+
+class PlayerStats(BaseModel):
+    matches: int
+    goals: int
+    shots: int
+    assists: int
+    steals: int
+    blocks: int
+    exclusions: int
+    turnovers: int
+    goals_per_match: float
+    shooting_pct: float
 
 class PlayerTrendPoint(BaseModel):
     match_index: int
@@ -120,6 +134,34 @@ class MatchOut(BaseModel):
     home_score: Optional[int]
     away_score: Optional[int]
     venue: Optional[str] = None
+
+
+class MatchTeamStats(BaseModel):
+    team_id: int
+    team_name: str
+    is_home: bool
+    stats: Dict[str, float | int]
+
+
+class MatchPlayerLine(BaseModel):
+    player_id: int
+    player_name: str
+    team_id: Optional[int]
+    team_name: Optional[str]
+    goals: Optional[int]
+    shots: Optional[int]
+    assists: Optional[int]
+    steals: Optional[int]
+    blocks: Optional[int]
+    exclusions: Optional[int]
+    turnovers: Optional[int]
+
+
+class MatchDetail(MatchOut):
+    home_team_id: int
+    away_team_id: int
+    team_stats: List[MatchTeamStats] = []
+    player_stats: List[MatchPlayerLine] = []
 
 
 class CsvImportRequest(BaseModel):

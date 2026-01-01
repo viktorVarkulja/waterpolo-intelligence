@@ -7,6 +7,8 @@ export const queryKeys = {
     ["team-trends", id, filters] as const,
   teamMatches: (id: number, filters: Record<string, string | number | null | undefined>) =>
     ["team-matches", id, filters] as const,
+  teamRoster: (id: number, filters: Record<string, string | number | null | undefined>) =>
+    ["team-roster", id, filters] as const,
   compare: (filters: Record<string, string | number | null | undefined>) =>
     ["compare", filters] as const,
   players: (filters: Record<string, string | number | null | undefined>) =>

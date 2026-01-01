@@ -1,9 +1,0 @@
-{
-  "/admin/page": "app/admin/page.js",
-  "/compare/page": "app/compare/page.js",
-  "/matches/page": "app/matches/page.js",
-  "/players/[id]/page": "app/players/[id]/page.js",
-  "/players/page": "app/players/page.js",
-  "/teams/[slug]/page": "app/teams/[slug]/page.js",
-  "/teams/page": "app/teams/page.js"
-}

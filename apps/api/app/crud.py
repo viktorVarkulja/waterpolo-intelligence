@@ -44,7 +44,9 @@ def get_player(session: Session, player_id: int) -> Player | None:
 def list_matches(session: Session, season: str | None = None, stage: str | None = None) -> List[Match]:
     stmt = select(Match)
     if season:
-        stmt = stmt.where(Match.season == season)
+        season_exists = session.execute(select(func.count(Match.id)).where(Match.season == season)).scalar_one()
+        if season_exists:
+            stmt = stmt.where(Match.season == season)
     if stage and stage != "all":
         stmt = stmt.where(Match.stage == stage)
     return session.execute(stmt.order_by(Match.date.nulls_last())).scalars().all()
@@ -88,6 +90,55 @@ def list_players_filtered(
     return session.execute(stmt.order_by(Player.name)).scalars().all()
 
 
+def player_aggregates(
+    session: Session,
+    player_ids: List[int],
+    season: str | None = None,
+    stage: str | None = None,
+) -> Dict[int, Dict[str, float | int]]:
+    if not player_ids:
+        return {}
+    stmt = (
+        select(
+            PlayerMatchStats.player_id.label("player_id"),
+            func.count(PlayerMatchStats.id).label("matches"),
+            func.coalesce(func.sum(PlayerMatchStats.goals), 0).label("goals"),
+            func.coalesce(func.sum(PlayerMatchStats.shots), 0).label("shots"),
+            func.coalesce(func.sum(PlayerMatchStats.assists), 0).label("assists"),
+            func.coalesce(func.sum(PlayerMatchStats.steals), 0).label("steals"),
+            func.coalesce(func.sum(PlayerMatchStats.blocks), 0).label("blocks"),
+            func.coalesce(func.sum(PlayerMatchStats.exclusions), 0).label("exclusions"),
+            func.coalesce(func.sum(PlayerMatchStats.turnovers), 0).label("turnovers"),
+        )
+        .join(Match, Match.id == PlayerMatchStats.match_id)
+        .where(PlayerMatchStats.player_id.in_(player_ids))
+        .group_by(PlayerMatchStats.player_id)
+    )
+    if season:
+        stmt = stmt.where(Match.season == season)
+    if stage and stage != "all":
+        stmt = stmt.where(Match.stage == stage)
+    rows = session.execute(stmt).all()
+    results: Dict[int, Dict[str, float | int]] = {}
+    for row in rows:
+        matches = int(row.matches)
+        goals = int(row.goals)
+        shots = int(row.shots)
+        results[int(row.player_id)] = {
+            "matches": matches,
+            "goals": goals,
+            "shots": shots,
+            "assists": int(row.assists),
+            "steals": int(row.steals),
+            "blocks": int(row.blocks),
+            "exclusions": int(row.exclusions),
+            "turnovers": int(row.turnovers),
+            "goals_per_match": float(goals) / float(matches) if matches else 0.0,
+            "shooting_pct": float(goals) / float(shots) if shots else 0.0,
+        }
+    return results
+
+
 def list_player_matches(
     session: Session,
     player_id: int,
@@ -104,6 +155,21 @@ def list_player_matches(
     if stage and stage != "all":
         stmt = stmt.where(Match.stage == stage)
     return session.execute(stmt.order_by(Match.date.nulls_last())).all()
+
+
+def list_match_team_stats(session: Session, match_id: int) -> List[TeamMatchStats]:
+    return session.execute(select(TeamMatchStats).where(TeamMatchStats.match_id == match_id)).scalars().all()
+
+
+def list_match_player_stats(session: Session, match_id: int) -> List[tuple[PlayerMatchStats, Player, Team | None]]:
+    stmt = (
+        select(PlayerMatchStats, Player, Team)
+        .join(Player, Player.id == PlayerMatchStats.player_id)
+        .outerjoin(Team, Team.id == Player.team_id)
+        .where(PlayerMatchStats.match_id == match_id)
+        .order_by(PlayerMatchStats.goals.desc().nullslast(), Player.name)
+    )
+    return session.execute(stmt).all()
 
 
 def team_aggregates(session: Session, team_id: int) -> Dict[str, float]:
