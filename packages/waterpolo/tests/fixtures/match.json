@@ -1,0 +1,27 @@
+{
+  "match": {
+    "match_id": "m1",
+    "season": "2024-2025",
+    "stage": "Group A",
+    "date": "2025-01-15",
+    "time_utc": "19:00:00",
+    "venue": "Recco",
+    "home_team": "PRO RECCO",
+    "away_team": "VK NOVI BEOGRAD",
+    "home_score": 12,
+    "away_score": 10,
+    "source_url": "https://example.com/m1"
+  },
+  "team_stats": [
+    {
+      "team_name": "PRO RECCO",
+      "headers": ["ToG", "ToSh", "EXG", "EXSh", "As"],
+      "values": ["12", "30", "4", "6", "7"]
+    },
+    {
+      "team_name": "VK NOVI BEOGRAD",
+      "headers": ["ToG", "ToSh", "EXG", "EXSh", "As"],
+      "values": ["10", "28", "3", "5", "6"]
+    }
+  ]
+}

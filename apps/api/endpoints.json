@@ -1,0 +1,7 @@
+{
+  "calendar": "https://len.microplustimingservices.com/lenchampionsleague202526/export/PNChampionsLeague/SCH_14102025.JSON",
+  "match": "https://len.microplustimingservices.com/lenchampionsleague202526/export/PNChampionsLeague/{match_id}/STA_{match_id}CL26.JSON",
+  "rosters": "https://len.microplustimingservices.com/lenchampionsleague202526/export/PNChampionsLeague/TeamRoster_ASM.JSON",
+  "player_stats": "https://len.microplustimingservices.com/lenchampionsleague202526/export/PNChampionsLeague/{match_id}/PBP_{match_id}CL26.JSON",
+  "contatori": "https://len.microplustimingservices.com/lenchampionsleague202526/export/PNChampionsLeague/Contatori.json"
+}

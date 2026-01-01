@@ -1,0 +1,16 @@
+{
+  "matches": [
+    {
+      "match_id": "m1",
+      "season": "2024-2025",
+      "stage": "Group A",
+      "date": "2025-01-15T19:00:00Z",
+      "venue": "Recco",
+      "home_team": "PRO RECCO",
+      "away_team": "VK NOVI BEOGRAD",
+      "home_score": 12,
+      "away_score": 10,
+      "source_url": "https://example.com/m1"
+    }
+  ]
+}
