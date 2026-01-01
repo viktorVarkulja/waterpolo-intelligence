@@ -4,7 +4,7 @@ from datetime import datetime
 import re
 from typing import Any, Dict, List, Tuple
 
-from waterpolo.common.normalize import parse_int
+from waterpolo.common.normalize import normalize_label, parse_int
 from waterpolo.scrape.models import Match, Player, PlayerMatchStats, TeamMatchStats
 from waterpolo.scrape.parsers.stats import map_player_stats, map_stats
 
@@ -18,10 +18,9 @@ def _season_from_filename(filename: str | None) -> str | None:
 
 def _parse_microplus_stats(headers: List[str], values: List[str]) -> Dict[str, int]:
     stats: Dict[str, int] = {}
-    header_map = {h.lower().strip(): h for h in headers}
     for raw_header, value in zip(headers, values):
-        header = raw_header.lower().strip()
-        if header == "%":
+        header = normalize_label(raw_header)
+        if not header:
             continue
         if "/" in value:
             left, right = value.split("/", 1)
