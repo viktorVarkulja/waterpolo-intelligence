@@ -43,9 +43,14 @@ services:
     build:
       context: ..
       dockerfile: apps/web/Dockerfile
+    command: ["npm", "run", "dev", "--", "--webpack", "-H", "0.0.0.0", "-p", "3000"]
     environment:
       NEXT_PUBLIC_API_URL: http://waterpolo-api.localhost
       CHOKIDAR_USEPOLLING: "1"
+      CHOKIDAR_INTERVAL: "1000"
+      WATCHPACK_POLLING: "true"
+      WATCHPACK_POLLING_INTERVAL: "1000"
+      NEXT_WEBPACK_USEPOLLING: "1"
     volumes:
       - ../apps/web:/app
       - /app/node_modules

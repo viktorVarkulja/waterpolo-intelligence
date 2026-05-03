@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Providers>
             <FilterProvider>
               <NavBar />
-              <main className="mx-auto max-w-[1280px] px-6 pb-16 pt-8">{children}</main>
+              <main className="mx-auto max-w-[1280px] px-4 pb-16 pt-6 sm:px-6 sm:pt-8">{children}</main>
             </FilterProvider>
           </Providers>
         </div>

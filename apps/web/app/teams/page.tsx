@@ -79,8 +79,8 @@ export default function TeamsPage() {
   }, [data, pinnedOnly]);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
-      <aside className="sticky top-24 h-fit rounded-2xl border border-white bg-white/80 p-5 shadow-sm">
+    <div className="grid gap-6 lg:grid-cols-[280px_1fr] lg:gap-8">
+      <aside className="h-fit rounded-2xl border border-white bg-white/80 p-5 shadow-sm lg:sticky lg:top-24">
         <h2 className="text-lg font-semibold">Filters</h2>
         <div className="mt-4 space-y-4">
           <input
