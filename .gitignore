@@ -12,6 +12,10 @@ node_modules/
 # Logs
 *.log
 
+# Env (do not commit secrets)
+.env
+.env.*
+
 # OS
 .DS_Store
 Thumbs.db

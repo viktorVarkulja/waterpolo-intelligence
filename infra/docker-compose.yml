@@ -18,7 +18,7 @@ services:
       sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
     environment:
       DATABASE_URL: postgresql+psycopg2://waterpolo:waterpolo@db:5432/waterpolo
-      CSV_DEFAULT_PATH: /mnt/data/match_data_correct.csv
+      CSV_DEFAULT_PATH: /data/match_data_correct.csv
       ADMIN_JWT_SECRET: change-me
       ADMIN_USERNAME: admin
       ADMIN_PASSWORD: admin
@@ -26,7 +26,7 @@ services:
     volumes:
       - ../apps/api:/app
       - ../packages/waterpolo:/app/packages/waterpolo
-      - /mnt/data:/mnt/data:ro
+      - ../data:/data:ro
     depends_on:
       - db
     networks:

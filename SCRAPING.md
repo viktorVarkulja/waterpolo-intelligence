@@ -72,7 +72,7 @@ waterpolo scrape-discover --out config/endpoints.json
 waterpolo scrape-full --season 2025
 waterpolo scrape-match --match-id m1
 waterpolo scrape-rosters --season 2025
-waterpolo ingest-csv --path /mnt/data/match_data_correct.csv
+waterpolo ingest-csv --path /path/to/match_data_correct.csv
 ```
 
 ## Adding a new season

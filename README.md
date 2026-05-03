@@ -14,14 +14,14 @@ project/
 
 ## Local dev (Docker)
 
-If you're using the shared Traefik proxy, start it first:
+If you're using a shared Traefik proxy, start it first (optional):
 
 ```bash
-cd /mnt/d/Viktor/TestCodes/traefik
+cd /path/to/traefik
 docker compose up -d
 ```
 
-Add hosts entries (Windows file at `C:\Windows\System32\drivers\etc\hosts`):
+Add hosts entries (Windows hosts file: `C:\Windows\System32\drivers\etc\hosts`):
 
 ```
 127.0.0.1 waterpolo.localhost
@@ -45,7 +45,7 @@ docker compose -f infra/docker-compose.yml exec api alembic upgrade head
 ```bash
 curl -X POST http://waterpolo-api.localhost/admin/import/csv \
   -H "Content-Type: application/json" \
-  -d '{"path": "/mnt/data/match_data_correct.csv"}'
+  -d '{"path": "/path/to/match_data_correct.csv"}'
 ```
 
 - Web UI: http://waterpolo.localhost
@@ -62,10 +62,10 @@ source .venv/bin/activate
 pip install -e ../../packages/waterpolo
 pip install -e .
 export DATABASE_URL="postgresql+psycopg2://waterpolo:waterpolo@localhost:5432/waterpolo"
-export CSV_DEFAULT_PATH="/mnt/data/match_data_correct.csv"
-export ADMIN_JWT_SECRET="change-me"
-export ADMIN_USERNAME="admin"
-export ADMIN_PASSWORD="admin"
+export CSV_DEFAULT_PATH="/path/to/match_data_correct.csv"
+export ADMIN_JWT_SECRET="replace-me"
+export ADMIN_USERNAME="replace-me"
+export ADMIN_PASSWORD="replace-me"
 alembic upgrade head
 uvicorn app.main:app --reload
 ```
@@ -83,7 +83,7 @@ npm run dev
 
 - `apps/api/.env.example`
 - `apps/web/.env.local.example`
-Set `ADMIN_JWT_SECRET`, `ADMIN_USERNAME`, and `ADMIN_PASSWORD` for the admin panel.
+Copy examples to local env files and set `ADMIN_JWT_SECRET`, `ADMIN_USERNAME`, and `ADMIN_PASSWORD` for the admin panel.
 
 ## Data assumptions
 

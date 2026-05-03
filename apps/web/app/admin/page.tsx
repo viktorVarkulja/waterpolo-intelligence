@@ -14,6 +14,7 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [season, setSeason] = useState("CL26");
   const [stage, setStage] = useState("");
+  const [csvPath, setCsvPath] = useState("");
   const [token, setToken] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [notifications, setNotifications] = useState<string[]>([]);
@@ -129,7 +130,7 @@ export default function AdminPage() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ path: "/mnt/data/match_data_correct.csv" })
+      body: JSON.stringify({ path: csvPath || null })
     });
     if (!res.ok) {
       setStatus("Import failed.");
@@ -236,6 +237,15 @@ export default function AdminPage() {
 
       <div className="rounded-2xl bg-white/80 p-6 border border-white grid gap-4">
         <h3 className="text-lg font-semibold">CSV seed</h3>
+        <p className="text-sm text-slate">
+          Leave empty to use the API default path (recommended for Docker).
+        </p>
+        <input
+          className="rounded-lg border border-slate/40 px-3 py-2"
+          placeholder="/data/match_data_correct.csv"
+          value={csvPath}
+          onChange={(e) => setCsvPath(e.target.value)}
+        />
         <button
           className="rounded-full border border-slate/40 px-4 py-2 text-sm"
           onClick={handleCsvImport}
